@@ -13,6 +13,7 @@ import javafx.scene.Group;
 import javafx.scene.effect.Reflection;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -39,6 +40,18 @@ public class GuiController implements Initializable {
     @FXML
     private GameOverPanel gameOverPanel;
 
+    @FXML
+    private Label scoreLabel;
+
+    @FXML
+    private Label linesLabel;
+
+    @FXML
+    private Label levelLabel;
+
+    @FXML
+    private Label highScoreLabel;
+
     private Rectangle[][] displayMatrix;
 
     private InputEventListener eventListener;
@@ -51,9 +64,14 @@ public class GuiController implements Initializable {
 
     private final BooleanProperty isGameOver = new SimpleBooleanProperty();
 
+    private int totalLinesCleared = 0;
+    private int currentLevel = 1;
+    private HighScoreManager highScoreManager;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Font.loadFont(getClass().getClassLoader().getResource("digital.ttf").toExternalForm(), 38);
+        highScoreManager = new HighScoreManager();
         gamePanel.setFocusTraversable(true);
         gamePanel.requestFocus();
         gamePanel.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -116,7 +134,7 @@ public class GuiController implements Initializable {
 
         timeLine = new Timeline(new KeyFrame(
                 Duration.millis(400),
-                ae -> moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))
+                event -> moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))
         ));
         timeLine.setCycleCount(Timeline.INDEFINITE);
         timeLine.play();
@@ -187,6 +205,9 @@ public class GuiController implements Initializable {
         if (isPause.getValue() == Boolean.FALSE) {
             DownData downData = eventListener.onDownEvent(event);
             if (downData.getClearRow() != null && downData.getClearRow().getLinesRemoved() > 0) {
+                totalLinesCleared += downData.getClearRow().getLinesRemoved();
+                updateLevel();
+                updateLinesDisplay();
                 NotificationPanel notificationPanel = new NotificationPanel("+" + downData.getClearRow().getScoreBonus());
                 groupNotification.getChildren().add(notificationPanel);
                 notificationPanel.showScore(groupNotification.getChildren());
@@ -201,10 +222,30 @@ public class GuiController implements Initializable {
     }
 
     public void bindScore(IntegerProperty integerProperty) {
+        if (scoreLabel != null) {
+            scoreLabel.textProperty().bind(integerProperty.asString());
+        }
+        if (linesLabel != null) {
+            linesLabel.setText(String.valueOf(totalLinesCleared));
+        }
+        if (levelLabel != null) {
+            levelLabel.setText(String.valueOf(currentLevel));
+        }
+        if (highScoreLabel != null) {
+            highScoreLabel.setText(String.valueOf(highScoreManager.getHighScore()));
+        }
     }
 
     public void gameOver() {
         timeLine.stop();
+        // Check and update high score
+        if (eventListener != null) {
+            int currentScore = eventListener.getCurrentScore();
+            highScoreManager.updateHighScore(currentScore);
+            if (highScoreLabel != null) {
+                highScoreLabel.setText(String.valueOf(highScoreManager.getHighScore()));
+            }
+        }
         gameOverPanel.setVisible(true);
         isGameOver.setValue(Boolean.TRUE);
     }
@@ -214,6 +255,15 @@ public class GuiController implements Initializable {
         gameOverPanel.setVisible(false);
         eventListener.createNewGame();
         gamePanel.requestFocus();
+        
+        // Reset counters
+        totalLinesCleared = 0;
+        currentLevel = 1;
+        updateLinesDisplay();
+        if (levelLabel != null) {
+            levelLabel.setText("1");
+        }
+        
         timeLine.play();
         isPause.setValue(Boolean.FALSE);
         isGameOver.setValue(Boolean.FALSE);
@@ -222,4 +272,41 @@ public class GuiController implements Initializable {
     public void pauseGame(ActionEvent actionEvent) {
         gamePanel.requestFocus();
     }
+
+    private void updateLevel() {
+        int newLevel = (totalLinesCleared / 10) + 1;
+        if (newLevel != currentLevel) {
+            currentLevel = newLevel;
+            if (levelLabel != null) {
+                levelLabel.setText(String.valueOf(currentLevel));
+            }
+            // Update score level for multiplier
+            if (eventListener != null) {
+                eventListener.updateScoreLevel(currentLevel);
+            }
+            // Increase game speed with level
+            updateGameSpeed();
+        }
+    }
+
+    private void updateLinesDisplay() {
+        if (linesLabel != null) {
+            linesLabel.setText(String.valueOf(totalLinesCleared));
+        }
+    }
+
+    private void updateGameSpeed() {
+        if (timeLine != null) {
+            timeLine.stop();
+            // Decrease duration as level increases (faster game)
+            double newDuration = Math.max(50, 400 - (currentLevel - 1) * 30);
+            timeLine = new Timeline(new KeyFrame(
+                    Duration.millis(newDuration),
+                    event -> moveDown(new MoveEvent(EventType.DOWN, EventSource.THREAD))
+            ));
+            timeLine.setCycleCount(Timeline.INDEFINITE);
+            timeLine.play();
+        }
+    }
+
 }

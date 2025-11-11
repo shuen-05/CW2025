@@ -2,7 +2,7 @@ package com.comp2042;
 
 public class GameController implements InputEventListener {
 
-    private Board board = new SimpleBoard(25, 10);
+    private final Board board = new SimpleBoard(25, 10);
 
     private final GuiController viewGuiController;
 
@@ -22,7 +22,7 @@ public class GameController implements InputEventListener {
             board.mergeBrickToBackground();
             clearRow = board.clearRows();
             if (clearRow.getLinesRemoved() > 0) {
-                board.getScore().add(clearRow.getScoreBonus());
+                board.getScore().addWithLevelMultiplier(clearRow.getScoreBonus());
             }
             if (board.createNewBrick()) {
                 viewGuiController.gameOver();
@@ -61,5 +61,15 @@ public class GameController implements InputEventListener {
     public void createNewGame() {
         board.newGame();
         viewGuiController.refreshGameBackground(board.getBoardMatrix());
+    }
+
+    @Override
+    public void updateScoreLevel(int level) {
+        board.getScore().setLevel(level);
+    }
+
+    @Override
+    public int getCurrentScore() {
+        return board.getScore().getScore();
     }
 }

@@ -70,3 +70,27 @@
     -fx-fill: yellow;
     -fx-text-fill: yellow;
 }
+
+.scorePanel {
+    -fx-background-color: rgba(0, 0, 0, 0.7);
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-spacing: 5;
+}
+
+.scoreLabel {
+    -fx-font-family: "Let's go Digital";
+    -fx-font-size: 16px;
+    -fx-text-fill: #FFD700;
+    -fx-font-weight: bold;
+}
+
+.scoreValue {
+    -fx-font-family: "Let's go Digital";
+    -fx-font-size: 24px;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-color: rgba(0, 0, 0, 0.5);
+    -fx-background-radius: 5;
+    -fx-padding: 5;
+}

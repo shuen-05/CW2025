@@ -20,6 +20,18 @@
             <GameOverPanel fx:id="gameOverPanel"/>
         </VBox>
     </Group>
+    
+    <!-- Score Display Panel -->
+    <VBox layoutX="500" layoutY="50" spacing="10" styleClass="scorePanel">
+        <Label text="SCORE" styleClass="scoreLabel"/>
+        <Label fx:id="scoreLabel" text="0" styleClass="scoreValue"/>
+        <Label text="LINES" styleClass="scoreLabel"/>
+        <Label fx:id="linesLabel" text="0" styleClass="scoreValue"/>
+        <Label text="LEVEL" styleClass="scoreLabel"/>
+        <Label fx:id="levelLabel" text="1" styleClass="scoreValue"/>
+        <Label text="HIGH SCORE" styleClass="scoreLabel"/>
+        <Label fx:id="highScoreLabel" text="0" styleClass="scoreValue"/>
+    </VBox>
     <stylesheets>
         <URL value="@window_style.css"/>
     </stylesheets>
