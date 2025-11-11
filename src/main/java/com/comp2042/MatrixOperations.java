@@ -88,23 +88,23 @@ public class MatrixOperations {
                 break;
             }
         }
-        // Enhanced scoring system with better point values
+        // Scoring per lines cleared at once: 1->1, 2->3, 3->5, 4->8
         int scoreBonus = 0;
         switch (clearedRows.size()) {
             case 1:
-                scoreBonus = 100;  // Single line
+                scoreBonus = 1;
                 break;
             case 2:
-                scoreBonus = 300;  // Double line
+                scoreBonus = 3;
                 break;
             case 3:
-                scoreBonus = 500;  // Triple line
+                scoreBonus = 5;
                 break;
             case 4:
-                scoreBonus = 800;  // Tetris (4 lines)
+                scoreBonus = 8;
                 break;
             default:
-                scoreBonus = 50 * clearedRows.size() * clearedRows.size();
+                scoreBonus = clearedRows.size();
                 break;
         }
         return new ClearRow(clearedRows.size(), tmp, scoreBonus);

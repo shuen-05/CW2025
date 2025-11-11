@@ -146,26 +146,26 @@ public class GuiController implements Initializable {
             case 0:
                 returnPaint = Color.TRANSPARENT;
                 break;
-            case 1:
-                returnPaint = Color.AQUA;
+            case 1: // I
+                returnPaint = Color.CYAN;
                 break;
-            case 2:
-                returnPaint = Color.BLUEVIOLET;
+            case 2: // J
+                returnPaint = Color.BLUE;
                 break;
-            case 3:
-                returnPaint = Color.DARKGREEN;
+            case 3: // L
+                returnPaint = Color.ORANGE;
                 break;
-            case 4:
+            case 4: // O
                 returnPaint = Color.YELLOW;
                 break;
-            case 5:
+            case 5: // S
+                returnPaint = Color.LIMEGREEN;
+                break;
+            case 6: // T
+                returnPaint = Color.PURPLE;
+                break;
+            case 7: // Z
                 returnPaint = Color.RED;
-                break;
-            case 6:
-                returnPaint = Color.BEIGE;
-                break;
-            case 7:
-                returnPaint = Color.BURLYWOOD;
                 break;
             default:
                 returnPaint = Color.WHITE;

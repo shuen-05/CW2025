@@ -22,7 +22,7 @@
     </Group>
     
     <!-- Score Display Panel -->
-    <VBox layoutX="500" layoutY="50" spacing="10" styleClass="scorePanel">
+    <VBox layoutX="250" layoutY="50" spacing="10" styleClass="scorePanel">
         <Label text="SCORE" styleClass="scoreLabel"/>
         <Label fx:id="scoreLabel" text="0" styleClass="scoreValue"/>
         <Label text="LINES" styleClass="scoreLabel"/>

@@ -22,7 +22,7 @@ public class GameController implements InputEventListener {
             board.mergeBrickToBackground();
             clearRow = board.clearRows();
             if (clearRow.getLinesRemoved() > 0) {
-                board.getScore().addWithLevelMultiplier(clearRow.getScoreBonus());
+                board.getScore().add(clearRow.getScoreBonus());
             }
             if (board.createNewBrick()) {
                 viewGuiController.gameOver();
@@ -30,10 +30,6 @@ public class GameController implements InputEventListener {
 
             viewGuiController.refreshGameBackground(board.getBoardMatrix());
 
-        } else {
-            if (event.getEventSource() == EventSource.USER) {
-                board.getScore().add(1);
-            }
         }
         return new DownData(clearRow, board.getViewData());
     }
