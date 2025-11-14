@@ -26,6 +26,8 @@ public class GameController implements InputEventListener {
             }
             if (board.createNewBrick()) {
                 viewGuiController.gameOver();
+            } else {
+                viewGuiController.updateActiveBrick(board.getViewData());
             }
 
             viewGuiController.refreshGameBackground(board.getBoardMatrix());
@@ -50,6 +52,32 @@ public class GameController implements InputEventListener {
     public ViewData onRotateEvent(MoveEvent event) {
         board.rotateLeftBrick();
         return board.getViewData();
+    }
+
+    @Override
+    public DownData onHardDrop(MoveEvent event) {
+        ClearRow clearRow = null;
+
+        // Keep moving the brick down until it can't move anymore
+        while (board.moveBrickDown()) {
+            // Continue moving down - the loop will break when moveBrickDown returns false
+        }
+
+        // Once the brick can't move down anymore, handle the landing
+        board.mergeBrickToBackground();
+        clearRow = board.clearRows();
+        if (clearRow.getLinesRemoved() > 0) {
+            board.getScore().add(clearRow.getScoreBonus());
+        }
+        if (board.createNewBrick()) {
+            viewGuiController.gameOver();
+        } else {
+            viewGuiController.updateActiveBrick(board.getViewData());
+        }
+
+        viewGuiController.refreshGameBackground(board.getBoardMatrix());
+
+        return new DownData(clearRow, board.getViewData());
     }
 
 
